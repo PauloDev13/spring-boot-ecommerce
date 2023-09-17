@@ -1,7 +1,9 @@
 package com.prmorais.ecommerce.config;
 
+import com.prmorais.ecommerce.entity.Country;
 import com.prmorais.ecommerce.entity.Product;
 import com.prmorais.ecommerce.entity.ProductCategory;
+import com.prmorais.ecommerce.entity.State;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.EntityType;
 import org.springframework.context.annotation.Configuration;
@@ -27,23 +29,31 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
   public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
     HttpMethod[] theUnsupportedActions = {HttpMethod.PUT, HttpMethod.POST, HttpMethod.DELETE};
     // Disable HTTP methods for Product: PUT, POST and DELETE
-    config.getExposureConfiguration()
-        .forDomainType(Product.class)
-        .withItemExposure((metdata, httpMethods) -> httpMethods.disable(theUnsupportedActions))
-        .withCollectionExposure((metdata, httpMethods) -> httpMethods.disable(theUnsupportedActions));
+    disableHttpMethods(Product.class, config, theUnsupportedActions);
 
     // Disable HTTP methods for ProductCategory: PUT, POST and DELETE
-    config.getExposureConfiguration()
-        .forDomainType(ProductCategory.class)
-        .withItemExposure((metdata, httpMethods) -> httpMethods.disable(theUnsupportedActions))
-        .withCollectionExposure((metdata, httpMethods) -> httpMethods.disable(theUnsupportedActions));
+    disableHttpMethods(ProductCategory.class, config, theUnsupportedActions);
+
+    // Disable HTTP methods for ProductCategory: PUT, POST and DELETE
+    disableHttpMethods(Country.class, config, theUnsupportedActions);
+
+    // Disable HTTP methods for ProductCategory: PUT, POST and DELETE
+    disableHttpMethods(State.class, config, theUnsupportedActions);
 
     // chama método auxiliar interno
     exposeIds(config);
   }
 
+  private static void disableHttpMethods(Class theClass, RepositoryRestConfiguration config, HttpMethod[] theUnsupportedActions) {
+    config
+        .getExposureConfiguration()
+        .forDomainType(theClass)
+        .withItemExposure((metdata, httpMethods) -> httpMethods.disable(theUnsupportedActions))
+        .withCollectionExposure((metdata, httpMethods) -> httpMethods.disable(theUnsupportedActions));
+  }
+
   private void exposeIds(RepositoryRestConfiguration config) {
-    // expõe' Ids da entidade
+    // expõe Ids da entidade
 
     //pega uma lista de todas as classes de entidade do gerenciador de entidade
     Set<EntityType<?>> entities = entityManager.getMetamodel().getEntities();
