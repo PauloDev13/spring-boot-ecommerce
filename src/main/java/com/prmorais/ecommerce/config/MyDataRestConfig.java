@@ -6,6 +6,7 @@ import com.prmorais.ecommerce.entity.ProductCategory;
 import com.prmorais.ecommerce.entity.State;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.EntityType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
@@ -19,6 +20,8 @@ import java.util.Set;
 @Configuration
 public class MyDataRestConfig implements RepositoryRestConfigurer {
 
+  @Value("${allowed.origins}")
+  private String[] theAllowedOrigins;
   private final EntityManager entityManager;
 
   public MyDataRestConfig(EntityManager entityManager) {
@@ -27,24 +30,34 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
 
   @Override
   public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
-    HttpMethod[] theUnsupportedActions = {HttpMethod.PUT, HttpMethod.POST, HttpMethod.DELETE};
-    // Disable HTTP methods for Product: PUT, POST and DELETE
+    HttpMethod[] theUnsupportedActions = {
+        HttpMethod.PUT,
+        HttpMethod.POST,
+        HttpMethod.DELETE,
+        HttpMethod.PATCH
+    };
+    // Disable HTTP methods for Product: PUT, POST, PATCH and DELETE
     disableHttpMethods(Product.class, config, theUnsupportedActions);
 
-    // Disable HTTP methods for ProductCategory: PUT, POST and DELETE
+    // Disable HTTP methods for ProductCategory:PUT, POST, PATCH and DELETE
     disableHttpMethods(ProductCategory.class, config, theUnsupportedActions);
 
-    // Disable HTTP methods for ProductCategory: PUT, POST and DELETE
+    // Disable HTTP methods for ProductCategory: PUT, POST, PATCH and DELETE
     disableHttpMethods(Country.class, config, theUnsupportedActions);
 
-    // Disable HTTP methods for ProductCategory: PUT, POST and DELETE
+    // Disable HTTP methods for ProductCategory: PUT, POST, PATCH and DELETE
     disableHttpMethods(State.class, config, theUnsupportedActions);
-
     // chama método auxiliar interno
     exposeIds(config);
+
+    // configure CORS mapping
+    cors.addMapping(config.getBasePath() + "/**").allowedOrigins(theAllowedOrigins);
   }
 
-  private static void disableHttpMethods(Class theClass, RepositoryRestConfiguration config, HttpMethod[] theUnsupportedActions) {
+  private static void disableHttpMethods(
+      Class theClass, RepositoryRestConfiguration
+      config, HttpMethod[] theUnsupportedActions
+  ) {
     config
         .getExposureConfiguration()
         .forDomainType(theClass)

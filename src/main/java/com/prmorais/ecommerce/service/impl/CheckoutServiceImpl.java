@@ -42,6 +42,14 @@ public class CheckoutServiceImpl implements CheckoutService {
 
     // popula o objeto customer com os dados da ordem de compra
     Customer customer = purchaseDTO.getCustomer();
+    // checa se já existe Cliente com o email informado
+    String theEmail = customer.getEmail();
+    Customer customerFromDB = customerRepository.findByEmail(theEmail);
+    // se o houve cliente com o email
+    if (customerFromDB != null) {
+      // atualiza o cliente enviado com os dados do cliente encontrado no BD
+      customer = customerFromDB;
+    }
     customer.add(order);
 
     // salva no banco de dados
