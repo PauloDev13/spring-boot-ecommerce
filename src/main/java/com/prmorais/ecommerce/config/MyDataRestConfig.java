@@ -1,9 +1,6 @@
 package com.prmorais.ecommerce.config;
 
-import com.prmorais.ecommerce.entity.Country;
-import com.prmorais.ecommerce.entity.Product;
-import com.prmorais.ecommerce.entity.ProductCategory;
-import com.prmorais.ecommerce.entity.State;
+import com.prmorais.ecommerce.entity.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.EntityType;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,11 +39,14 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
     // Disable HTTP methods for ProductCategory:PUT, POST, PATCH and DELETE
     disableHttpMethods(ProductCategory.class, config, theUnsupportedActions);
 
-    // Disable HTTP methods for ProductCategory: PUT, POST, PATCH and DELETE
+    // Disable HTTP methods for Country: PUT, POST, PATCH and DELETE
     disableHttpMethods(Country.class, config, theUnsupportedActions);
 
-    // Disable HTTP methods for ProductCategory: PUT, POST, PATCH and DELETE
+    // Disable HTTP methods for State: PUT, POST, PATCH and DELETE
     disableHttpMethods(State.class, config, theUnsupportedActions);
+
+    // Disable HTTP methods for Order: PUT, POST, PATCH and DELETE
+    disableHttpMethods(Order.class, config, theUnsupportedActions);
     // chama método auxiliar interno
     exposeIds(config);
 
