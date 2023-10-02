@@ -25,22 +25,14 @@ public class SecurityConfig {
         .authenticated()
         .anyRequest().permitAll()
         )
+        // add CORS filters
         .cors(Customizer.withDefaults())
+        // .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configure(httpSecurityCorsConfigurer.disable()))
+        // disable CSRF since we are not using Cookies for session tracking
+//        .csrf().disable()
+        .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.configure(httpSecurityCsrfConfigurer.disable()))
         .oauth2ResourceServer(oauth2ResourceServer ->
             oauth2ResourceServer.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())));
-    //add CORS filters
-//    .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configure(httpSecurityCorsConfigurer.disable()))
-//    .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.configure(httpSecurityCsrfConfigurer.disable()));
-
-    //add content negotiation strategy
-//    .setSharedObject(ContentNegotiationStrategy.class, new
-//        HeaderContentNegotiationStrategy());
-
-    //force a non-empty response body for 401's to make the response more friendly
-
-//    Okta.configureResourceServer401ResponseBody(http);
-
-    // disable CSRF since we are not using Cookies for session tracking
 
     return http.build();
   }
