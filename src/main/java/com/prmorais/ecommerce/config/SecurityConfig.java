@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.*;
@@ -27,10 +28,9 @@ public class SecurityConfig {
         )
         // add CORS filters
         .cors(Customizer.withDefaults())
-        // .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configure(httpSecurityCorsConfigurer.disable()))
+//        .cors(cors -> cors.disable())
         // disable CSRF since we are not using Cookies for session tracking
-//        .csrf().disable()
-        .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.configure(httpSecurityCsrfConfigurer.disable()))
+        .csrf(AbstractHttpConfigurer::disable)
         .oauth2ResourceServer(oauth2ResourceServer ->
             oauth2ResourceServer.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())));
 
@@ -49,4 +49,5 @@ public class SecurityConfig {
 
     return jwtDecoder;
   }
+
 }
